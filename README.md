@@ -1,719 +1,479 @@
 
-# 👋 PHP & Full-Stack Developer | Cloud Engineering | DevOps
+<div align="center">
+### PHP Developer · Full-Stack Delivery · Cloud Infrastructure · CI/CD · Moodle
 
-### PHP 5–8.5 • Laravel • Angular • AWS • Azure • Terraform • CI/CD • Moodle
+**I build, maintain and modernise PHP applications — from legacy PHP 5 systems to modern PHP 8.x environments.**
 
-I am a PHP and full-stack developer with hands-on experience in maintaining, modernising and deploying web applications.
+I enjoy working across the full software delivery process: understanding a monolithic codebase, implementing features, writing automated checks, managing source control, and deploying changes with repeatable pipelines.
 
-My experience covers legacy monolithic applications, modern PHP development, cloud infrastructure, automated testing and deployment pipelines.
+`Vanilla PHP` · `PHP 5 → PHP 8.x` · `Laravel` · `Angular` · `Git` · `Bash` · `YAML` · `PHPUnit` · `PHPStan` · `AWS` · `Azure` · `Terraform` · `Moodle`
 
-I focus on understanding how applications work from end to end — from writing PHP functions and fixing bugs through to configuring infrastructure, diagnosing production issues and deploying reliable releases.
-
----
-
-## 🛠️ Technical Skills
-
-| Area | Technologies |
-|---|---|
-| Backend | PHP 5–8.x, Laravel, Composer, PHP Artisan |
-| Frontend | Angular, JavaScript, HTML, CSS |
-| Databases | MySQL, SQL Server, SQL |
-| Testing | PHPUnit, PHPStan, PHP_CodeSniffer, code quality checks |
-| CI/CD | GitHub Actions, YAML, Bash, automated pipelines |
-| AWS | ECS, clusters, task definitions, IAM, CloudWatch, SES, ACM |
-| Azure | App Service, Terraform, Key Vault, databases, networking |
-| Infrastructure | Terraform, reusable modules, environment configuration |
-| Version Control | Git, GitHub, branching, merging, reverting, cherry-picking |
-| CMS & Learning | Moodle, custom Moodle plugins, WordPress |
-| Architecture | Monolithic applications, legacy systems, application modernisation |
+</div>
 
 ---
 
-# 🚀 How I Build, Test and Deploy Applications
+## 🚀 What I do — and how I do it
 
-I use Git, Bash, YAML and CI/CD pipelines to automate the process of building, validating and deploying application changes.
+| Area | My hands-on approach |
+| --- | --- |
+| **Vanilla PHP development** | Build framework-independent, reusable functions and services with clear naming, small responsibilities, readable code and predictable error handling. |
+| **Legacy modernisation** | Upgrade PHP 5-era applications to PHP 8, working incrementally through dependency constraints, deprecated behaviour, tests and runtime compatibility. |
+| **CI/CD automation** | Write Bash scripts and YAML pipelines that install dependencies, run checks, test changes and enforce quality gates before deployment. |
+| **Code quality** | Use PHPUnit, PHPStan and code-style checkers to find regressions, catch type issues and keep a consistent standard. |
+| **Git workflows** | Work with branches, inspect diffs and logs, cherry-pick targeted changes, revert faulty commits and resolve merges. |
+| **WordPress ↔ Moodle APIs** | Connect applications through REST APIs, validate requests/responses and troubleshoot integration issues. |
+| **Linux automation and data processing** | Build CSV import scripts and cron jobs, plus Node.js processes that receive and return reports through SFTP. |
+| **Moodle customisation** | Extend Moodle through custom plugins, hooks/events, capabilities and scheduled tasks rather than editing core wherever possible. |
+| **Monolithic applications** | Navigate tightly coupled code, trace dependencies and introduce safer boundaries so large existing systems can evolve. |
+| **Laravel + Angular delivery** | Build and validate changes locally, use Laravel Artisan for backend tasks, then deploy through AWS cluster services and task definitions. |
+| **AWS operations** | Work with IAM, certificates, monitoring, CloudWatch metrics and alarms, notifications and email-delivery metrics/settings. |
+| **Azure infrastructure as code** | Provision modular Azure infrastructure with Terraform, manage Key Vault secrets and environment configuration, set firewall rules, and debug deployed applications. |
 
-My approach typically involves:
+## 🛠️ How I build a CI/CD pipeline
 
-1. Developing and testing changes locally.
-2. Creating a dedicated Git branch.
-3. Implementing PHP or frontend functionality.
-4. Running automated tests and static analysis.
-5. Committing and reviewing changes.
-6. Running a CI/CD pipeline.
-7. Building and deploying the application.
-8. Monitoring the deployed environment.
-9. Investigating failures and rolling back when necessary.
+A pipeline should make the same checks run for every pull request, rather than relying on manual steps.
 
-## ⚙️ Building CI/CD Pipelines with YAML and Bash
+**My approach:**
 
-I use YAML to define pipeline stages and Bash scripts to execute build, testing and deployment tasks.
+1. **Define the checks** — Composer validation, coding standards, static analysis and unit tests.
+2. **Automate with Bash** — keep build and test commands reproducible locally and in CI.
+3. **Orchestrate with YAML** — trigger the checks on pushes and pull requests.
+4. **Set quality gates** — block merging when required checks fail.
+5. **Deploy deliberately** — add environment-specific secrets, approvals and deployment steps only when required.
 
-### Example GitHub Actions pipeline
+**Example: `.github/workflows/php-ci.yml`** (adapt paths/tools to the project):
 
 ```yaml
-name: PHP CI Pipeline
+name: PHP CI
 
 on:
   push:
     branches: [develop, main]
   pull_request:
+    branches: [develop, main]
 
 jobs:
-  php-tests:
+  quality-and-tests:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Check out code
         uses: actions/checkout@v4
 
-      - name: Setup PHP
+      - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          coverage: none
           tools: composer:v2
+          coverage: none
 
-      - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
+      - name: Validate Composer config
+        run: composer validate --strict
 
-      - name: Run PHPUnit
-        run: vendor/bin/phpunit
+      - name: Install locked dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
 
-      - name: Run PHPStan
-        run: vendor/bin/phpstan analyse
+      - name: Check runtime requirements
+        run: composer check-platform-reqs
 
       - name: Check coding standards
         run: vendor/bin/phpcs
+
+      - name: Static analysis
+        run: vendor/bin/phpstan analyse
+
+      - name: Unit tests
+        run: vendor/bin/phpunit
 ```
 
-This example shows how I structure automated PHP quality checks. Real deployment workflows also require environment-specific configuration, credentials and permissions.
+These commands assume **PHP_CodeSniffer, PHPStan and PHPUnit are installed as development dependencies** and configured for the repository. A production deployment would normally be a separate, protected job.
 
-### Using Bash for automated tasks
+**Example: `scripts/check.sh`** — the same checks can run locally:
 
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "Checking PHP version..."
-php -v
-
-echo "Installing Composer dependencies..."
+composer validate --strict
 composer install --no-interaction --prefer-dist
-
-echo "Running PHPUnit tests..."
-vendor/bin/phpunit
-
-echo "Running PHPStan..."
+composer check-platform-reqs
+vendor/bin/phpcs
 vendor/bin/phpstan analyse
-
-echo "Build checks completed successfully."
+vendor/bin/phpunit
 ```
 
-Using `set -euo pipefail` allows a Bash script to stop when a command fails, a variable is undefined or a pipeline fails.
+> **What this demonstrates:** Bash scripting, YAML configuration, dependency management, automated testing and a repeatable delivery process — not just familiarity with tool names.
 
-I use scripts like these to make repeated development and deployment tasks more consistent.
+## ⚙️ Laravel + Angular: from local development to AWS deployment
 
----
+On a full-stack project using **Laravel (PHP backend)** and **Angular (frontend)**, my workflow takes a feature from local development through tests, versioned deployment and operational verification.
 
-# 🐘 PHP Development and Legacy Modernisation
+| Stage | What I do | Example |
+| --- | --- | --- |
+| **Develop locally** | Update Laravel controllers/services, migrations or jobs and Angular components/services; use Git branches to isolate changes. | `php artisan serve` / `ng serve` |
+| **Validate** | Use Artisan to check routes and run application tests; build and test the Angular app before committing. | `php artisan test` / `ng test` / `ng build` |
+| **Build & package** | Install locked dependencies and build deployable application/container artifacts via CI. | `composer install`, `npm ci` |
+| **Deploy to AWS** | Publish a new application image/release, update the service task definition and roll out the new revision to the cluster. | ECS task definition + service update (illustrative) |
+| **Monitor & recover** | Watch service health, container logs and CloudWatch alarms; if the release fails, deploy a previously known-good task definition. | AWS console / CLI |
 
-## Upgrading applications from PHP 5 to PHP 8
+> **Important distinction:** `php artisan` runs Laravel commands such as migrations, jobs and tests. Angular uses the Angular CLI (`ng`) for frontend development, builds and tests.
 
-I have experience upgrading older PHP applications to modern PHP versions while identifying compatibility issues and preserving existing functionality.
+**A typical local verification sequence:**
 
-This can involve:
+```bash
+# Laravel backend
+composer install
+php artisan migrate:status
+php artisan test
 
-- Reviewing legacy functions and unsupported syntax.
-- Identifying deprecated and removed PHP functionality.
-- Updating Composer dependencies.
-- Reviewing application frameworks and libraries.
-- Replacing outdated database functionality.
-- Correcting errors caused by stricter PHP behaviour.
-- Updating PHPUnit and static analysis tooling.
-- Testing application behaviour before deployment.
-- Checking logs for warnings, deprecations and runtime errors.
+# Angular frontend (run in its project directory)
+npm ci
+npx ng test --watch=false
+npx ng build --configuration production
+```
 
-### Composer dependency investigation
+**How I manage releases and rollback on AWS ECS:**
+
+1. Package the tested version and publish the container image to the image registry.
+2. Register a **new ECS task definition revision** that points to that image.
+3. Update the ECS service in the target cluster to use that revision.
+4. Confirm that tasks are healthy and inspect application logs and service events.
+5. If a regression is found, redeploy a **previously working task definition revision** and verify service health. Database changes may require a separate rollback strategy.
+
+```bash
+# Example only — substitute your actual names and tested task definition ARN
+aws ecs update-service \
+  --cluster "<cluster-name>" \
+  --service "<service-name>" \
+  --task-definition "<task-definition-family>:<revision>"
+
+# Observe the rollout
+aws ecs describe-services \
+  --cluster "<cluster-name>" \
+  --services "<service-name>"
+```
+
+This describes the release workflow rather than asserting that each project uses the same CI runner or deployment tooling.
+
+## ☁️ AWS: deploying, monitoring and operating applications
+
+I work across deployment and day-to-day operational concerns, connecting infrastructure configuration to how applications actually behave in production.
+
+| AWS capability | How I apply it |
+| --- | --- |
+| **Clusters & tasks** | Check ECS services, task health and deployments; introduce new task revisions for application releases. |
+| **Certificates** | Configure and check application TLS certificates, including AWS Certificate Manager (ACM) where applicable. |
+| **Monitoring** | Investigate logs, metrics and failures through CloudWatch and service events. |
+| **Cloud metrics & alarms** | Set up relevant metrics/alarms and notification thresholds to surface service issues. |
+| **IAM users & permissions** | Work with IAM users, roles and policies, using least-privilege access for people and workloads. |
+| **Email metrics & settings** | Review email delivery settings and sending metrics with Amazon SES where used. |
+| **Notifications** | Configure operational notifications, for example CloudWatch alarms routed through Amazon SNS. |
+
+**Practical example — diagnosing a failed release:** inspect ECS deployment events, review the task/container logs, correlate failure timing with CloudWatch metrics, then either fix and deploy a new revision or restore a tested revision.
+
+## 🏗️ Azure + Terraform: provisioning infrastructure from reusable modules
+
+I have set up project infrastructure in **Microsoft Azure using Terraform**, separating reusable infrastructure modules from application-specific configuration.
+
+**How I structure the project:**
+
+```text
+infrastructure/
+├── modules/
+│   ├── app-service/
+│   ├── database/
+│   ├── key-vault/
+│   ├── networking/
+│   └── monitoring/
+└── applications/
+    └── example-app/
+        ├── main.tf
+        ├── variables.tf
+        ├── outputs.tf
+        └── terraform.tfvars.example
+```
+
+This is an **illustrative structure** showing my modular approach — not a copy of an employer's infrastructure.
+
+**Example: calling an App Service module from an application configuration:**
+
+```hcl
+module "app_service" {
+  source              = "../../modules/app-service"
+  app_name            = var.app_name
+  resource_group_name = var.resource_group_name
+  location            = var.location
+}
+
+module "database" {
+  source              = "../../modules/database"
+  resource_group_name = var.resource_group_name
+  location            = var.location
+}
+```
+
+**My end-to-end workflow:**
+
+1. **Structure the Terraform code** into reusable modules, with an application folder that calls only the modules needed for that project.
+2. **Provision hosting** using Azure App Service and configure application settings required by the deployment.
+3. **Set up database connectivity** for the project's chosen engine — Azure Database for MySQL or Azure SQL Database / SQL Server, depending on application requirements.
+4. **Handle secrets** using Azure Key Vault and references/managed identity where supported. Keep non-secret environment-specific configuration in Azure App Service settings or approved deployment variables, rather than hard-coding values.
+5. **Set network rules** and check database firewall, networking, access restrictions and connection settings in the Azure portal.
+6. **Validate and deploy** using `terraform fmt`, `terraform validate`, `terraform plan` and a reviewed `terraform apply`.
+7. **Debug live issues** with Azure App Service SSH/console, logs and configuration inspection, then reproduce and fix problems with session handling and persistent storage.
+
+```bash
+terraform fmt -check -recursive
+terraform init
+terraform validate
+terraform plan -var-file="dev.tfvars"
+# Run apply only after checking the plan and selecting the correct environment
+terraform apply -var-file="dev.tfvars"
+```
+
+**Real troubleshooting theme:** during a deployment, investigate why an app works locally but fails in Azure. I have used the Azure application console/SSH and settings to identify **storage and session configuration problems**, make corrections, and verify the application after deployment.
+
+> **Security practice:** never commit real `.tfvars` values containing secrets, credentials, `.env` files or Terraform state. Use identity-based access and secure secret management; be aware that Terraform state can contain sensitive values.
+
+## 🐘 How I modernise PHP applications
+
+I work with PHP 8.0–8.5 concepts and legacy migration paths, including upgrades from PHP 5-era applications. My focus is on **maintaining behaviour while reducing upgrade risk**.
+
+**Typical upgrade process:**
+
+1. **Audit the application:** identify the PHP version, Composer constraints, extensions, framework/plugin versions and runtime environment.
+2. **Find incompatibilities:** inspect deprecations, removed functions, stricter typing, dynamic properties and dependency conflicts.
+3. **Introduce safety checks:** add or update PHPUnit tests around critical business logic.
+4. **Improve code quality:** run PHPStan and a coding-standard checker, fixing issues in manageable batches.
+5. **Upgrade incrementally:** update the runtime and dependencies in staging, then verify CLI jobs, web requests and integrations.
+6. **Deploy with rollback:** release through version control and CI/CD, with monitoring and a documented rollback path.
+
+**Example commands I use during an upgrade:**
 
 ```bash
 php -v
-
-composer --version
-
-composer check-platform-reqs
-
-composer outdated
-
+composer validate
 composer prohibits php 8.2 -t
+composer check-platform-reqs
+vendor/bin/phpunit
+vendor/bin/phpstan analyse
+vendor/bin/phpcs
 ```
 
-These commands help determine whether application dependencies and the running environment support a target PHP version.
+### PHP functions and scheduled jobs
 
-### PHP 8.x quality and compatibility
-
-My work involves maintaining and updating applications across PHP 8 releases, including compatibility planning towards PHP 8.5.
-
-Areas I work with include:
-
-- Type declarations and return types.
-- Exceptions and error handling.
-- Nullable types and stricter function signatures.
-- Object-oriented programming.
-- Dependency management with Composer.
-- Modernising deprecated PHP features.
-- CLI scripts and scheduled jobs.
-- Automated testing and static analysis.
-
-## Creating PHP functions and scheduled jobs
-
-I use PHP to implement reusable business logic, integrations, command-line utilities and scheduled background tasks.
-
-A reliable scheduled job should provide meaningful logging, clear error handling and appropriate exit codes.
-
-### Example PHP CLI job
+I use PHP for reusable business logic, integration points and command-line/scheduled jobs. A good job should provide meaningful exit codes and logs so problems can be surfaced by the scheduler or CI.
 
 ```php
 <?php
 
 declare(strict_types=1);
 
-function processPendingJobs(): void
+function formatJobResult(int $processed): string
 {
-    // Retrieve and process pending jobs.
-    // Replace with application-specific logic.
+    return sprintf('Processed %d records', $processed);
 }
 
 try {
-    processPendingJobs();
-
-    echo "Jobs completed successfully.\n";
+    // Call application services here rather than placing all logic in a CLI script.
+    fwrite(STDOUT, formatJobResult(0) . PHP_EOL);
     exit(0);
-
 } catch (Throwable $exception) {
-    error_log(
-        "Scheduled job failed: " .
-        $exception->getMessage()
-    );
-
+    error_log($exception->getMessage());
     exit(1);
 }
 ```
 
-This structure allows a scheduler or CI system to detect job failures using the process exit code.
+*Illustrative example — replace with a sanitised real-world use case from your work.*
 
----
+## ♻️ Vanilla PHP: reusable, readable functionality
 
-# 🧪 Testing and Code Quality
+I work with **vanilla PHP**, not just frameworks. I aim for code that is easy to understand, test and reuse: small functions with one responsibility, meaningful names, typed inputs/outputs where supported, and application-specific behaviour separated from input/output handling.
 
-I use automated testing and code quality tools to improve reliability during development and PHP upgrades.
-
-## PHPUnit
-
-I use PHPUnit to test individual functions, classes and application behaviour.
+For example, when processing an imported CSV, I can put validation in a reusable function rather than repeating it inside an upload handler or cron job:
 
 ```php
 <?php
 
-use PHPUnit\Framework\TestCase;
+declare(strict_types=1);
 
-final class CalculatorTest extends TestCase
+function normaliseEmail(string $email): ?string
 {
-    public function testAddition(): void
-    {
-        $result = 10 + 5;
+    $value = strtolower(trim($email));
 
-        $this->assertSame(15, $result);
-    }
+    return filter_var($value, FILTER_VALIDATE_EMAIL) ? $value : null;
 }
 ```
 
-Run tests with:
+**How I apply this:** keep CSV parsing, validation, database updates and logging in separate functions or classes so the same logic can be called from a web request, CLI script or scheduled job. Add PHPUnit tests around shared behaviour and use PHPStan / PHP_CodeSniffer to catch problems early.
+
+*Simplified illustrative example; not a copy of private project code.*
+
+## 🔗 WordPress ↔ Moodle: integration through APIs
+
+On a current project, I work on **communication between WordPress and Moodle**. Rather than treating them as isolated platforms, I work with the request/response flow and integration points connecting the applications.
+
+**How I approach the integration:**
+
+1. Establish which application is the caller and which owns the data or operation.
+2. Use the available API endpoints and the appropriate authentication method.
+3. Validate payloads, required fields, HTTP statuses and error responses.
+4. Test requests with **Postman** or repeatable automated checks.
+5. Capture useful diagnostics without logging tokens, passwords or personal information.
+6. Verify the workflow across both systems after changes or PHP upgrades.
+
+**Example REST response check** (illustrative endpoint and payload):
 
 ```bash
-vendor/bin/phpunit
+curl --fail-with-body --silent --show-error \
+  -H 'Accept: application/json' \
+  'https://example.invalid/api/status'
 ```
 
-## PHPStan
+In real integrations, secrets belong in protected application configuration rather than command history or source control.
 
-I use PHPStan to identify potential defects without executing application code.
+## 🐧 Linux automation: CSV imports, cron and scheduled jobs
 
-```bash
-vendor/bin/phpstan analyse
+I use Linux-hosted scripts to process uploaded CSV files and run recurring application tasks. The goal is **repeatability, validation and visibility**, not just scheduling a script.
+
+**Typical workflow:** receive a CSV → validate headings and records → process records with reusable PHP functions → record successes/errors → return an appropriate exit code → investigate logs when the scheduler reports failure.
+
+**Example crontab entry** (illustrative paths):
+
+```cron
+15 2 * * * /usr/bin/php /srv/app/bin/import-csv.php >> /var/log/app/import-csv.log 2>&1
 ```
 
-This can highlight incorrect types, potentially invalid method calls and other issues before deployment.
+I consider idempotency (safe reruns), file permissions, duplicate records and what should happen after partial failure. I also keep secrets out of scripts and logs.
 
-## PHP_CodeSniffer
+## 📦 Node.js: SFTP report processing and delivery
 
-I use coding standard checks to identify inconsistent formatting and violations of configured coding standards.
-
-```bash
-vendor/bin/phpcs
-```
-
-These tools can also run automatically as part of CI/CD pipelines, preventing changes from progressing when important checks fail.
-
----
-
-# 🅰️ Laravel and Angular Application Development
-
-I have worked on a project combining a Laravel PHP backend with an Angular frontend, including local development, testing and deployment to AWS.
-
-## Local development workflow
-
-### Laravel backend
-
-```bash
-composer install
-
-php artisan key:generate
-
-php artisan migrate
-
-php artisan serve
-```
-
-I use Laravel Artisan commands for application configuration, migrations, testing and operational tasks.
-
-Commands are selected according to the needs and configuration of each project.
-
-### Angular frontend
-
-```bash
-npm ci
-
-ng test
-
-ng build
-```
-
-I use Angular tooling to install dependencies, test frontend functionality and create production-ready builds.
-
-## Deployment to AWS ECS
-
-My experience includes deploying application changes using AWS clusters, services and task definitions.
-
-A deployment workflow can include:
-
-1. Testing Laravel and Angular changes locally.
-2. Committing changes through Git.
-3. Running the appropriate pipeline checks.
-4. Building application artefacts and container images.
-5. Publishing versioned container images.
-6. Creating a new ECS task definition revision.
-7. Updating the ECS service to use the new revision.
-8. Monitoring task health and application logs.
-9. Investigating failed deployments and rolling back if required.
-
-### Example AWS ECS deployment command
-
-```bash
-aws ecs update-service \
-  --cluster application-cluster \
-  --service application-service \
-  --task-definition application-task:25
-```
-
-The cluster, service and revision shown are illustrative.
-
-## Rolling back application releases
-
-If a deployment introduces an issue, I can investigate the affected release and redeploy a previously working ECS task definition.
-
-For example:
-
-```bash
-aws ecs update-service \
-  --cluster application-cluster \
-  --service application-service \
-  --task-definition application-task:24
-```
-
-This updates the ECS service to use a previous task definition revision.
-
-I also use ECS service events, CloudWatch logs and application health checks to investigate failed releases.
-
-A rollback needs to account for database changes and other infrastructure dependencies, rather than assuming that every earlier application version is automatically compatible.
-
----
-
-# ☁️ AWS Cloud Engineering
-
-My AWS experience includes application hosting, deployment, security, monitoring and troubleshooting.
-
-## ECS clusters and task management
-
-- Managing ECS clusters and services.
-- Working with container task definitions.
-- Deploying new task revisions.
-- Monitoring service deployment status.
-- Investigating stopped and unhealthy tasks.
-- Restoring previous application versions when required.
-
-## AWS Certificate Manager
-
-- Working with SSL/TLS certificates.
-- Configuring certificate usage for HTTPS.
-- Investigating certificate configuration and validation.
-
-## Identity and Access Management (IAM)
-
-- Managing IAM users and permissions.
-- Working with policies, roles and access requirements.
-- Reviewing application and deployment access.
-- Following least-privilege principles.
-
-## CloudWatch monitoring and metrics
-
-- Reviewing application and infrastructure logs.
-- Configuring CloudWatch metrics and alarms.
-- Monitoring application health and service behaviour.
-- Identifying errors and operational issues.
-- Creating notifications for conditions requiring attention.
-
-## Email services and metrics
-
-- Working with AWS email delivery settings.
-- Investigating delivery and sending configuration.
-- Reviewing email-related metrics.
-- Monitoring sending failures and delivery behaviour.
-
-## Notifications
-
-- Configuring operational alerts.
-- Connecting monitoring events to notifications.
-- Investigating issues raised by alarms.
-- Using monitoring information during deployment troubleshooting.
-
----
-
-# 🌐 Azure Infrastructure with Terraform
-
-I have experience setting up Azure application infrastructure using Terraform, including organising reusable modules and configuring application environments.
-
-## Terraform project structure
-
-I structure Terraform projects by separating reusable infrastructure components from environment-specific application configuration.
-
-Example:
+I have worked with **Node.js to build a report processor** that retrieves an incoming file over SFTP, processes its contents and sends a generated report back to the user through SFTP.
 
 ```text
-terraform/
-├── modules/
-│   ├── app-service/
-│   ├── mysql/
-│   ├── sql-server/
-│   ├── key-vault/
-│   ├── networking/
-│   └── monitoring/
-│
-└── applications/
-    └── example-app/
-        ├── main.tf
-        ├── variables.tf
-        ├── outputs.tf
-        └── terraform.tfvars
+SFTP source
+    ↓ download incoming file
+Node.js report processor
+    ↓ validate → transform → generate report
+SFTP destination
+    ↓ upload completed report
+Logs / error handling / retry or investigation
 ```
 
-This approach allows infrastructure to be maintained consistently without duplicating large amounts of Terraform configuration.
+**How I approach this:**
 
-## Calling reusable Terraform modules
+1. Connect securely using credentials or keys provided through environment configuration.
+2. Identify and download the expected input file.
+3. Validate file structure and process its records.
+4. Generate an output report with a predictable name and format.
+5. Upload it to the required SFTP location.
+6. Log outcomes and handle missing files, failed transfers or invalid data so the process can be diagnosed safely.
 
-### Example application configuration
+*This describes the workflow; implementation details and client data are deliberately omitted.*
 
-```hcl
-module "app_service" {
-  source = "../../modules/app-service"
+## 🌿 How I use Git to deliver and troubleshoot changes
 
-  app_name            = var.app_name
-  resource_group_name = var.resource_group_name
-  location            = var.location
-}
-```
-
-A database module can be called in the same way:
-
-```hcl
-module "mysql" {
-  source = "../../modules/mysql"
-
-  resource_group_name = var.resource_group_name
-  location            = var.location
-}
-```
-
-The examples demonstrate module composition. Module input variables must match the definitions in the actual project.
-
-## Provisioning Azure services
-
-My infrastructure work includes:
-
-- Azure App Service configuration.
-- MySQL database provisioning.
-- Azure SQL Server and SQL Database configuration.
-- Resource groups and application resources.
-- Networking and firewall rules.
-- Application configuration settings.
-- Monitoring and infrastructure troubleshooting.
-
-## Azure Key Vault and secrets
-
-I use Azure Key Vault to manage sensitive application configuration, such as database credentials and service secrets.
-
-I also work with environment variables and Terraform input variables to configure environments without hardcoding values directly into infrastructure code.
-
-### Example Terraform input
-
-```hcl
-variable "app_name" {
-  type = string
-}
-
-variable "environment" {
-  type = string
-}
-```
-
-For production environments, secrets should be supplied securely and referenced through Key Vault or appropriate managed identity mechanisms.
-
-Sensitive values should not be committed to Git or unnecessarily written into Terraform state.
-
-## Terraform deployment workflow
+I use Git as both a collaboration tool and a way to investigate what changed when something goes wrong.
 
 ```bash
-terraform init
-
-terraform fmt -check
-
-terraform validate
-
-terraform plan
-
-terraform apply
-```
-
-I use these commands to initialise infrastructure, validate configuration, review proposed changes and provision resources.
-
-## Azure firewall and configuration troubleshooting
-
-I have worked with Azure networking and application settings to identify connectivity and configuration problems.
-
-This includes:
-
-- Reviewing firewall rules and allowed connections.
-- Checking database connectivity.
-- Validating App Service configuration.
-- Investigating environment variables.
-- Checking application logs and runtime settings.
-
-## Debugging live Azure applications
-
-I have used Azure's SSH and diagnostic capabilities to troubleshoot issues preventing an application from operating correctly.
-
-My troubleshooting experience includes identifying and resolving problems involving:
-
-- Application storage configuration.
-- Session storage and persistence.
-- Incorrect environment settings.
-- Filesystem permissions.
-- Application startup and runtime errors.
-- Database connectivity.
-
-I use application logs, configuration inspection and controlled testing to identify the cause of issues before making corrections.
-
----
-
-# 🌿 Git Version Control and Troubleshooting
-
-I use Git for collaborative development, release management and investigating changes that introduce application issues.
-
-## Checking repository state
-
-```bash
+# Understand the current state
 git status
-
 git log --oneline --graph --decorate -15
-
 git diff
-```
 
-## Investigating changes
-
-```bash
+# Identify a change and inspect it
 git show <commit-sha>
 
-git diff main..develop
-
-git blame path/to/file.php
-```
-
-These commands help identify what changed, compare branches and investigate the history of a particular file.
-
-## Reverting a problematic change
-
-```bash
+# Undo a published change safely with a new commit
 git revert <commit-sha>
-```
 
-This creates a new commit that reverses an earlier change without rewriting published branch history.
-
-## Cherry-picking a specific fix
-
-```bash
+# Apply a specific fix to another branch
 git cherry-pick <commit-sha>
+
+# Compare release branches
+git diff main...develop
 ```
 
-I use cherry-picking when a particular change needs to be applied to another branch without merging unrelated commits.
+**My approach:** make small, reviewable commits; use pull requests and automated checks; favour `git revert` over rewriting shared branch history; and use logs/diffs to trace regressions. Git shows **changes and commit history**; runtime errors are investigated via application logs and test output.
 
-## Merging branch history
+## 🎓 How I extend Moodle
 
-```bash
-git checkout develop
+I work with the Moodle platform and its plugin architecture to add features to existing learning environments.
 
-git merge --no-ff <commit-sha>
-```
+**My typical process:**
 
-This can create a merge commit incorporating the history reachable from the selected commit.
+1. Identify the extension point: a **local plugin**, block, activity module or another supported plugin type.
+2. Implement PHP functionality using Moodle APIs and coding conventions.
+3. Define permissions/capabilities, configuration, database changes or scheduled tasks as required.
+4. Connect functionality through Moodle's events, hooks and external APIs where suitable.
+5. Test upgrades and compatibility in a non-production Moodle environment.
+6. Package and deploy the plugin in a maintainable way, avoiding changes to Moodle core where possible.
 
-## Troubleshooting workflow
+**Portfolio idea:** add a public, sanitised example plugin that demonstrates a settings page, capability checks and a scheduled task. Avoid publishing proprietary Moodle code or learner data.
 
-When investigating a regression, I typically:
+## 🧩 Working with monolithic workloads
 
-1. Reproduce the reported error.
-2. Review the application and server logs.
-3. Inspect recent Git commits.
-4. Compare affected branches or releases.
-5. Identify the relevant change.
-6. Test a fix locally.
-7. Run automated checks.
-8. Deploy the correction.
-9. Monitor the application after release.
+Much of real-world software engineering involves improving existing systems safely. For a monolithic PHP application, I focus on:
 
----
+- Tracing request paths and dependencies before changing behaviour.
+- Isolating business logic into testable functions or services where practical.
+- Keeping backwards compatibility visible through regression tests.
+- Breaking upgrades into smaller deployable changes.
+- Improving observability with clear logs, failed-job reporting and reproducible error cases.
 
-# 🎓 Moodle Development and Custom Plugins
+## 🤝 Delivery, quality, security and leadership
 
-I have experience working with Moodle and extending its functionality through custom development.
+Alongside the code and infrastructure work above, I have experience with the people and delivery processes that help software teams ship reliable changes. I group these by **how they contribute to delivery**, rather than using a long list of unconnected keywords.
 
-This includes understanding how Moodle plugins interact with the wider platform and how custom functionality can be introduced while maintaining compatibility.
+| Competency | How I apply it |
+| --- | --- |
+| **Leadership, coaching and mentoring** | Support developers through knowledge sharing, code reviews, feedback and practical problem-solving. |
+| **Recruitment and onboarding** | Help colleagues understand the codebase, development environment, team practices and expectations. |
+| **Agile / Scrum delivery** | Work with sprint planning, estimation, prioritisation and iterative releases. |
+| **Requirements and risk assessment** | Translate requests into achievable changes; identify dependencies, edge cases and rollout risks. |
+| **API testing / Postman** | Verify REST requests, responses, authentication behaviour and negative/error cases. |
+| **Test design and execution** | Carry out manual, regression and exploratory testing; support UAT and investigate defects. |
+| **Root cause analysis** | Reproduce errors, inspect logs and Git history, isolate the failing component and verify the fix. |
+| **Secure development / ISO 27001 awareness** | Apply access controls, appropriate handling of secrets and secure release practices in line with organisational policies. |
+| **Accessibility / WCAG** | Consider and test accessibility requirements during UI changes. |
+| **Stakeholder communication** | Explain risks, progress and technical issues in terms that help others make decisions. |
+| **Process improvement and documentation** | Document repeatable workflows, simplify manual tasks and improve development/onboarding guidance. |
+| **SQL / MySQL** | Investigate data issues and work with queries, application persistence and database configuration. |
+| **Pull requests and code reviews** | Review changes for readability, correctness, test coverage and deployment impact. |
 
-## Working with Moodle
+> For a public portfolio, keep only responsibilities you have **actually carried out**. In particular, distinguish *ISO 27001-aware practices* from formal auditor/certification experience, and *supporting recruitment* from owning hiring decisions.
 
-- Understanding the Moodle application structure.
-- Developing and adapting custom plugins.
-- Working with Moodle PHP APIs.
-- Extending application functionality.
-- Integrating custom business requirements.
-- Troubleshooting plugin compatibility.
-- Testing changes after Moodle and PHP upgrades.
+## 📌 Featured work / case studies
 
-## Example Moodle local plugin structure
+> Replace these with **real repositories, screenshots, redacted pipeline runs or short technical write-ups**. The examples above are templates, not claims that a specific repository is publicly available.
 
-```text
-local/customfeature/
-├── db/
-│   ├── access.php
-│   └── tasks.php
-├── classes/
-│   └── task/
-│       └── example_task.php
-├── lang/
-│   └── en/
-│       └── local_customfeature.php
-├── settings.php
-└── version.php
-```
+| Case study | What to show
+| --- | --- | --- |
+| **PHP legacy upgrade** | Before/after dependency constraints, compatibility fixes, PHPUnit test coverage, upgrade plan|
+| **CI/CD in Bash + YAML** | Workflow, reusable Bash script, quality gates, example failed and passing checks |
+| **Moodle custom plugin** | Plugin structure, capabilities, events/hooks, scheduled tasks and upgrade steps |
+| **Monolith maintenance** | A carefully anonymised refactor, regression test and rollback strategy |
+| **Laravel + Angular → AWS** | Local commands, validation, ECS task rollout and restoring a prior revision |
+| **Azure Terraform deployment** | Modules, App Service, database, Key Vault, firewall configuration and troubleshooting |
+| **WordPress ↔ Moodle integration** | Redacted request/response flow, validation and API troubleshooting |
+| **Linux CSV + cron processing** | Input validation, scheduled execution, logging and recovery behaviour |
+| **Node.js SFTP report processor** | File-transfer workflow, processing, outbound report and error handling |
 
-This demonstrates a typical layout for a Moodle local plugin.
+## 🔧 Tools and technologies
 
-### Example scheduled task definition
-
-```php
-<?php
-
-defined('MOODLE_INTERNAL') || die();
-
-$tasks = [
-    [
-        'classname' =>
-            '\local_customfeature\task\example_task',
-        'blocking' => 0,
-        'minute' => '0',
-        'hour' => '2',
-        'day' => '*',
-        'month' => '*',
-        'dayofweek' => '*',
-    ],
-];
-```
-
-I use Moodle's plugin mechanisms to extend functionality rather than making unnecessary modifications to the platform's core files.
+**Languages & frameworks:** Vanilla PHP (PHP 5-to-8 modernisation; PHP 8.x), Laravel, Angular, JavaScript/TypeScript, Node.js, Bash, YAML, SQL  
+**Testing & quality:** PHPUnit, PHPStan, PHP_CodeSniffer, Composer, Angular CLI  
+**Cloud & infrastructure:** AWS ECS, CloudWatch, IAM, ACM, SES, SNS; Azure App Service, Key Vault, MySQL, Azure SQL, Terraform modules  
+**Platform & delivery:** WordPress, Moodle, REST APIs, Postman, Linux, cron, CSV processing, SFTP, Git, GitHub, CI/CD, Docker, release management  
+**Engineering practices:** debugging, monitoring, code review, dependency upgrades, automation, monolith modernisation, rollback planning, Agile/Scrum, mentoring, test design, UAT, risk assessment, security awareness and accessibility testing
 
 ---
 
-# 🏗️ Maintaining Monolithic Applications
+<div align="center">
 
-I also work with legacy monolithic applications where functionality, dependencies and application components are closely connected.
+### 📫 Connect
 
-My approach involves:
+[GitHub](https://github.com/Sparker1991) · [LinkedIn](https://www.linkedin.com/in/scott-parker-bsc-62252625)
 
-- Understanding existing application architecture.
-- Tracing functionality across multiple areas of the codebase.
-- Identifying dependencies before making changes.
-- Isolating changes to reduce regression risk.
-- Updating outdated PHP functionality.
-- Introducing automated tests.
-- Improving error handling.
-- Using static analysis to find potential defects.
-- Planning upgrades in manageable stages.
-- Monitoring behaviour after deployment.
+*Building dependable software and making complex upgrades easier to maintain.*
 
-I recognise that modernising a monolithic application is often about improving reliability and maintainability without disrupting important business functionality.
-
----
-
-# 💡 How I Approach Technical Problems
-
-My development approach combines application-level debugging with infrastructure and deployment investigation.
-
-When something fails, I work through the problem systematically:
-
-1. **Identify** — Understand the error and its impact.
-2. **Investigate** — Review logs, code, configuration and recent changes.
-3. **Reproduce** — Confirm the problem in a controlled environment where possible.
-4. **Fix** — Apply a targeted change.
-5. **Validate** — Run tests and code quality checks.
-6. **Deploy** — Release the change through the appropriate process.
-7. **Monitor** — Confirm that the application is behaving correctly.
-8. **Document** — Record the cause and resolution for future reference.
-
----
-
-## 📌 Areas of Expertise
-
-**Application Development**
-PHP • Laravel • Angular • Moodle • WordPress
-
-**Application Modernisation**
-Legacy PHP • PHP 5 to PHP 8 • Composer • Monolithic Applications
-
-**Testing and Quality**
-PHPUnit • PHPStan • PHP_CodeSniffer • Static Analysis
-
-**CI/CD and Version Control**
-Git • GitHub • YAML • Bash • Automated Deployment
-
-**AWS**
-ECS • IAM • CloudWatch • SES • Certificate Manager • Notifications
-
-**Azure**
-Terraform • App Service • Key Vault • MySQL • Azure SQL • Networking
-
----
-
-### 🎯 My Focus
-
-Building, maintaining and improving applications through practical development, automated testing, infrastructure management and reliable deployment workflows.
-
-I enjoy solving problems across the full application lifecycle — from understanding legacy PHP code and developing new functionality to troubleshooting cloud environments and improving release processes.
+</div>
