@@ -440,24 +440,6 @@ Alongside the code and infrastructure work above, I have experience with the peo
 | **SQL / MySQL** | Investigate data issues and work with queries, application persistence and database configuration. |
 | **Pull requests and code reviews** | Review changes for readability, correctness, test coverage and deployment impact. |
 
-> For a public portfolio, keep only responsibilities you have **actually carried out**. In particular, distinguish *ISO 27001-aware practices* from formal auditor/certification experience, and *supporting recruitment* from owning hiring decisions.
-
-## 📌 Featured work / case studies
-
-> Replace these with **real repositories, screenshots, redacted pipeline runs or short technical write-ups**. The examples above are templates, not claims that a specific repository is publicly available.
-
-| Case study | What to show
-| --- | --- | --- |
-| **PHP legacy upgrade** | Before/after dependency constraints, compatibility fixes, PHPUnit test coverage, upgrade plan|
-| **CI/CD in Bash + YAML** | Workflow, reusable Bash script, quality gates, example failed and passing checks |
-| **Moodle custom plugin** | Plugin structure, capabilities, events/hooks, scheduled tasks and upgrade steps |
-| **Monolith maintenance** | A carefully anonymised refactor, regression test and rollback strategy |
-| **Laravel + Angular → AWS** | Local commands, validation, ECS task rollout and restoring a prior revision |
-| **Azure Terraform deployment** | Modules, App Service, database, Key Vault, firewall configuration and troubleshooting |
-| **WordPress ↔ Moodle integration** | Redacted request/response flow, validation and API troubleshooting |
-| **Linux CSV + cron processing** | Input validation, scheduled execution, logging and recovery behaviour |
-| **Node.js SFTP report processor** | File-transfer workflow, processing, outbound report and error handling |
-
 ## 🔧 Tools and technologies
 
 **Languages & frameworks:** Vanilla PHP (PHP 5-to-8 modernisation; PHP 8.x), Laravel, Angular, JavaScript/TypeScript, Node.js, Bash, YAML, SQL  
